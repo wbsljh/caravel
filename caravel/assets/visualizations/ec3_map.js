@@ -1,11 +1,13 @@
 const $ = require('jquery');
-const echarts = require('echarts');
+//const echarts = require('echarts');
+require('../node_modules/echarts-2.2.7/dist/echarts-all.js');
+// require('./echarts-2.2.7/dist/chart/map.js');
 
 function Ec3MapWidget(slice) {
   function refresh() {
     $.getJSON(slice.jsonEndpoint(), function(payload) {
         // 基于准备好的dom，初始化echarts实例
-        let chart = echarts.init(document.getElementById(slice.containerId));
+        
         // 绘制图表
         //slice.container.html(JSON.parse('{}));
         //let chart_options = {title:{text:'ECharts 入门示例'},tooltip:{},xAxis:{data:["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]},yAxis:{},series:[{name:'销量',type:'bar',data:[5,20,36,10,10,20]}]};
@@ -13,7 +15,7 @@ function Ec3MapWidget(slice) {
         let _option_str = payload.form_data.options;
         console.log(payload.form_data.options);
         let chart_options = eval('(' + _option_str + ')');
-        let legend_data = [];
+        /*let legend_data = [];
         let xaxis_data = [];
 
         //
@@ -60,10 +62,59 @@ function Ec3MapWidget(slice) {
         if ('xAxis' in chart_options) {
           //TODO consider more than one
           chart_options.xAxis[0].data = xaxis_data;
-        }
+        }*/
+
+
+
 
         console.log('chart_options: \n' + JSON.stringify(chart_options));
+
+        console.log(payload.form_data);
+
+        echarts.util.mapData.params.params.fuzhou = {
+                getGeoJson: function (callback) {
+                    $.ajax({
+                           url: payload.form_data.custom_map_url, //"",
+                           dataType: 'xml',
+                           type: "get",
+                           success: function(xml) {  
+                              callback(xml);                                      
+                           }
+                   });
+               } 
+         };
+
+        let chart = echarts.init(document.getElementById(slice.containerId));
         chart.setOption(chart_options);
+
+        /*$.get(payload.form_data.custom_map_url, function (customMapData) {
+            console.log('registerMap:' + payload.form_data.custom_map + '\n data:' + customMapData)
+            echarts.registerMap(payload.form_data.custom_map, customMapData);
+            let chart = echarts.init(document.getElementById(slice.containerId));
+            chart.setOption(chart_options);
+        });
+
+        $.ajax({
+               url: payload.form_data.custom_map_url, //"",
+               dataType: 'xml',
+               type: "get",
+               success: function(customMapData) {  
+                  console.log('registerMap:' + payload.form_data.custom_map + '\n data:' + customMapData)
+                  echarts.registerMap(payload.form_data.custom_map, customMapData);
+                  let chart = echarts.init(document.getElementById(slice.containerId));
+                  chart.setOption(chart_options);                                     
+               }
+        });*/
+
+
+        /*$.get(payload.form_data.custom_map_url, function (customMapData) {
+            console.log('registerMap:' + payload.form_data.custom_map + '\n data:' + customMapData)
+            echarts.registerMap(payload.form_data.custom_map, customMapData);
+            let chart = echarts.init(document.getElementById(slice.containerId));
+            chart.setOption(chart_options);
+        });    */
+
+        //chart.setOption(chart_options);
         //slice.container.html(payload.form_data.options);
         slice.done(payload);
       })
