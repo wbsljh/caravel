@@ -1020,7 +1020,6 @@ class FormFactory(object):
             viz_type = self.field_dict.get('viz_type')
 
         for field in viz.flat_form_fields():
-            print('.....%s'%(field))
             setattr(QueryForm, field, self.field_dict[field])
 
         def add_to_form(attrs):
